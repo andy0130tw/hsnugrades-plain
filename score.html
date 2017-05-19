@@ -1,0 +1,234 @@
+﻿<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css"/>
+<title>師大附中簡易成績查詢系統</title>
+
+<meta property="og:title" content="師大附中簡易成績查詢系統"/>
+ <meta property="og:type" content="website"/>
+ <meta property="og:url" content="http://andy0130tw.droppages.com/score"/>
+ <meta property="og:image" content="http://andy0130tw.droppages.com/logo.png"/>
+ <meta property="og:site_name" content="師大附中簡易成績查詢系統"/>
+ <meta property="og:description" content="消除成績與你的所有距離！手機可用的成績查詢系統！"/>
+ <meta property="fb:app_id" content="401223249937556"/>
+ <meta property="fb:admins" content="1795479671"/>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<script>
+
+var ind1=0,logged=false;
+
+var _td=new Date();
+var thisyear=_td.getFullYear()-1911;
+var thismonth=_td.getMonth()+1;
+
+//rev4 2014-10-10T12:49:35Z
+//confirm on redirection and refactoring
+
+var navLock=false;
+
+
+$(function() {
+
+$("a.logout").button().click(doLogout);
+$("a.ser").button().click(execser);
+
+var v1=thisyear+(thismonth>=9?0:-1);
+var v2=(thismonth==1||thismonth>=9)?1:2;
+
+$("#sp1").spinner({min:0,max:thisyear}).spinner("value",v1);
+//$("#sp2").spinner({min:1,max:2}).spinner("value",v2);
+//$("#sp3").spinner({min:1,max:1000}).spinner("value",1);
+
+$(".status").slideUp("fast");
+
+$( "#acc" ).accordion({heightStyle:"content"});
+
+$("#loginfr").load(loginListener);
+$("#serfr").load(scompListener);
+$("#logoutfr").load(logoutListener);
+
+});
+
+function doLogout(){
+	if(!logged){
+		alert("你還沒有登入，何以登出？");
+		return;
+	}
+	$("#serfr")[0].src="data:text/html,";
+	$("#logoutfr")[0].src="http://grades.hs.ntnu.edu.tw/online/student/depart_from.asp?action=%B2M%B0%A3%B8%EA%AE%C6";
+	logged=false;
+}
+
+function loginListener(){
+	//console.log(arguments);
+	if(ind1<1){
+		ind1++;
+		return;
+	}
+	logged=true;
+	$("#acc").accordion( "option", "active", 1 );
+	execser();
+	ind1=0;
+}
+
+function execser(){
+	goser($("#sp1").spinner("value"),$("#sp2")[0].value.split(" - ")[0],$("#sp3")[0].value.split(" - ")[0]);
+}
+
+function scompListener(){
+	$(".loading").slideUp("slow");
+	$(".lc").slideDown("slow");
+}
+
+function goser(yr,tr,num){
+	var _n=String(num);
+	while(_n.length<4)_n="0"+_n;
+	var _="http://grades.hs.ntnu.edu.tw/online/selection_student/student_subjects_number.asp?action=%A6U%A6%A1%A6%A8%C1Z&"
+		+"thisyear="+String(yr)
+		+"&thisterm="+String(tr)
+		+"&number="+_n;
+	$("#serfr")[0].src=_;
+	//等待
+	$(".loading").slideDown("slow");
+	$(".lc").slideUp("slow");
+}
+
+function logoutListener(){
+	$("#loginfr")[0].src="http://grades.hs.ntnu.edu.tw/online/";
+	$("#acc").accordion( "option", "active", 0 );
+}
+</script>
+
+</head>
+<body style="background-color:#FFFFCC">
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=401223249937556";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="cont">
+<h1 id="header" style="text-align:center; font-size:36px; margin: 0 -20px 0 -20px">師大附中簡易成績查詢系統 v1</h1>
+<br/>
+<div class="fb-like" data-href="http://andy0130tw.droppages.com/score" data-send="false" data-width="780" data-show-faces="true" data-font="segoe ui"></div>
+<div class="separator"/>
+
+<h2 style="color: #900;">更新!!</h2>
+<p style="font-size: 120%;">
+	有鑑於使用者日益眾多與<del>此網頁的陳舊腐朽</del>，作者另外開發了一個<a href="http://hsnu.qov.tw/" style="font-size: 120%;">新版的系統</a>，請舊雨新知多加利用。
+</p>
+<h2>使用說明</h2>
+<p style="margin: 0 10px 0 10px">
+1.請在登入畫面登入<br/>
+2.登入成功之後會被引導到查詢畫面<br/>
+3.選擇想查的考試項目，查詢~~
+</p>
+<h2>已知問題</h2>
+<p style="margin: 0 10px 0 10px">
+由於瀏覽器的安全限制，某些功能可能會不正常，例如查詢考試<s>只能以代號查詢</s><b>已確認並調整方式</b>，而完整的清單需要伺服器端代理。目前能做的是(暫時)繞過這些機制。<br/>
+</p>
+<h2>FAQ</h2>
+<span style="font-size:90%;alpha:0.9;margin: 0 10px 0 10px;display:block;">
+Q: 為什麼沒有加密連線？<br/>
+A: 沒有需要，登入會在學校原本的頁面處理。學校登入本來就沒有加密，資料也不會經過這個網站的伺服器端。<br/>
+Q: 過了一段時間之後出現500錯誤？<br/>
+A: 查詢逾時了，請登出→重新登入。<br/>
+</span>
+<br/>
+
+<div class="separator"/>
+<div id="acc">
+
+	<h3>登入</h3>
+	<div class="alpha">
+	<div id="logindiv">
+		<iframe src="http://grades.hs.ntnu.edu.tw/online/" scrolling="no" id="loginfr">
+		</iframe>
+	</div>
+	</div>
+
+	<h3>查詢</h3>
+	<div class="alpha">
+	<select id="cbox" style="width:280px">
+		<option>此功能還在設計</option>
+	</select>
+	<br/><br/>
+	年份：<input id="sp1" name="ysp" style="width:60px;height:40px"/>
+		&nbsp;&nbsp;學期：<!--<input id="sp2" name="tsp" style="width:60px;height:40px"/>-->
+		<select id="sp2" name="tsp" style="width:120px;height:40px">
+			<option>1 - 上學期</option>
+			<option>2 - 下學期</option>
+		</select>
+		<!--&nbsp;&nbsp;考試編號：<input id="sp3" name="nsp" style="width:60px;height:40px"/><br/>
+			<small>1=開學考、2=第一次段考、3=第二次段考、4=競試、5=期末考</small>-->
+		&nbsp;&nbsp;考試編號：
+		<select id="sp3" name="nsp" style="width:150px;height:40px">
+			<option>1 - 開學考</option>
+			<option>2 - 第一次段考</option>
+			<option>3 - 第二次段考</option>
+			<option>4 - 競試</option>
+			<option>5 - 期末考</option>
+			<option>6</option>
+			<option>7</option>
+		</select>
+		<a class="ser">查詢</a><br/>
+		<span style="font-size:60%;">如有編號錯誤情形，請於下方反映。</span><br/>
+
+		<span class="loading status"><img src="http://www.titantv.com/themes/_default/images/loading.gif" style="width:24px;height:24px;"/>查詢中...給我幾秒時間~</span><br/>
+		<span class="lc status" style="color: #00aa00"><img src="http://www.famfamfam.com/lab/icons/silk/icons/accept.png" style="width:24px;height:24px;"/>查詢完成！</span><br/>
+	<!--<div id="serdiv">-->
+		<iframe scrolling="no" id="serfr" style="border:none;">
+		</iframe>
+	<!--</div>-->
+	</div>
+
+	<h3>登出</h3>
+	<div class="alpha">
+	<a class="logout">按這裡登出</a>
+	<iframe scrolling="no" id="logoutfr">
+	</iframe>
+	</div>
+
+	<h3>更新紀錄</h3>
+	<div class="alpha">
+	<div style="height: 200px;">
+	<p>
+	v1 rev4，2014/10/10<br/>
+	修正輸錯驗證碼會強制重新導向的問題、程式碼整理<br/>
+	又經過了一些時日，先前寫JavaScript的經驗對我而言已經十分遙遠而幼稚。
+	</p>
+	<p>
+	v1 rev3，2013/11/23<br/>
+	經過一些時日，確認各編號所代表考試項目，故予以更新。如有查詢失敗或錯誤煩請回報。<br/>
+	介面優化
+	</p>
+	<p>
+	v1 rev2，2013/7/2<br/>
+	消除了使用Chrome的某個bug，可以正常查詢或登出<br/>
+	介面優化
+	</p>
+	<p>
+	v1 rev1，2013/7/1<br/>
+	第一次發佈
+	</p>
+	</div>
+	</div>
+</div>
+
+<div class="separator"/>
+<div class="fb-comments" data-href="http://andy0130tw.droppages.com/score" data-width="780" data-num-posts="10"></div>
+<div class="separator"/>
+rev4, Made by Andy, <i>last modified @ 2014/10/10</i>
+|| <a href="http://andy0130tw.blogspot.tw/2013/07/hsnuscore.html">Read my Post on my Blogger</a><br/>
+<i>All right reserved.</i>
+<br/>在此向原始的 <a href="http://crc.hs.ntnu.edu.tw/~lsc36/hsnugrades/">成績查詢系統 by LSC</a> 致敬！
+</div>
+</body>
+</html>
